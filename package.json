@@ -1,5 +1,6 @@
 {
   "name": "pivot",
+  "main": "pivot.js",
   "version": "0.0.1",
   "description": "in-memory pivot table computation",
   "author": "Roger Vandervort <rvandervort@gmail.com>",
