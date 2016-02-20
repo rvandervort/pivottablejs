@@ -15,12 +15,14 @@ exports.PivotTable = function PivotTable(data, options) {
 
   this.getCellKey = function(row) {
     var keys = [];
+    var rowFields = this.pivotOptions.rows;
+    var columnFields = this.pivotOptions.columns;
 
     for (var i = 0, j = this.pivotOptions.rows.length; i < j; i++)
-      keys.push(row[this.pivotOptions.rows[i].toString()]);
+      keys.push(row[rowFields[i].toString()]);
 
     for (var i = 0, j = this.pivotOptions.columns.length; i < j; i++)
-      keys.push(row[this.pivotOptions.columns[i].toString()]);
+      keys.push(row[columnFields[i].toString()]);
 
     return keys.join("\0");
   }
