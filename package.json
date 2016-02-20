@@ -1,0 +1,10 @@
+{
+  "name": "pivot",
+  "version": "0.0.1",
+  "description": "in-memory pivot table computation",
+  "author": "Roger Vandervort <rvandervort@gmail.com>",
+  "devDependencies": {
+    "mocha": "2.4.5",
+    "assert": "1.3.0"
+  }
+}
