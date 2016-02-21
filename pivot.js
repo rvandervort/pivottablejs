@@ -11,10 +11,12 @@ exports.PivotTable = function PivotTable(data, options) {
     'sum': function(currentCell, rowValue) { return currentCell.value + rowValue; }
   }
 
-  this.inputData = data;
-  this.pivotOptions = options;
-
-  this.aggregator = this.pivotOptions.aggregator || aggregators.count;
+  this.inputData = data || [];
+  this.aggregator = options.aggregator || aggregators.count;
+  this.valueField = options.valueField || 'value';
+  this.rowFields = options.rows || [];
+  this.columnFields = options.columns || [];
+  this.cells = { };
 
   if (typeof this.aggregator != 'function')
     if (typeof this.aggregator == 'string') {
@@ -25,10 +27,6 @@ exports.PivotTable = function PivotTable(data, options) {
       else
         throw new Error("Aggregator is not a function!");
     }
-
-
-  this.valueField = this.pivotOptions.valueField;
-  this.cells = { };
 
   for (var i = 0, j = this.inputData.length; i < j; i++) {
     var row = this.inputData[i];
@@ -59,16 +57,12 @@ exports.PivotTable.prototype.forEachCell = function(func) {
 
 exports.PivotTable.prototype.getCellKey = function(row) {
   var keys = [];
-  var rowFields = this.pivotOptions.rows || [];
-  var columnFields = this.pivotOptions.columns || [];
 
-  for (var i = 0, j = this.pivotOptions.rows.length; i < j; i++)
-    keys.push(row[rowFields[i].toString()]);
+  for (var i = 0, j = this.rowFields.length; i < j; i++)
+    keys.push(row[this.rowFields[i].toString()]);
 
-  for (var i = 0, j = this.pivotOptions.columns.length; i < j; i++)
-    keys.push(row[columnFields[i].toString()]);
+  for (var i = 0, j = this.columnFields.length; i < j; i++)
+    keys.push(row[this.columnFields[i].toString()]);
 
   return keys.join("\0");
 }
-
-
