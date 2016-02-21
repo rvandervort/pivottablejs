@@ -59,8 +59,8 @@ exports.PivotTable.prototype.forEachCell = function(func) {
 
 exports.PivotTable.prototype.getCellKey = function(row) {
   var keys = [];
-  var rowFields = this.pivotOptions.rows;
-  var columnFields = this.pivotOptions.columns;
+  var rowFields = this.pivotOptions.rows || [];
+  var columnFields = this.pivotOptions.columns || [];
 
   for (var i = 0, j = this.pivotOptions.rows.length; i < j; i++)
     keys.push(row[rowFields[i].toString()]);
