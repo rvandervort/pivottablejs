@@ -9,7 +9,7 @@ exports.PivotTable = function PivotTable(data, options) {
   var aggregators = {
     'count': function(currentCell, rowValue) { return currentCell.value + 1; },
     'sum': function(currentCell, rowValue) { return currentCell.value + rowValue; }
-  }
+  };
 
   this.inputData = data || [];
   this.aggregator = options.aggregator || aggregators.count;
@@ -57,11 +57,14 @@ exports.PivotTable.prototype.forEachCell = function(func) {
 
 exports.PivotTable.prototype.getCellKey = function(row) {
   var keys = [];
+  var i = 0;
+  var j = this.rowFields.length;
 
-  for (var i = 0, j = this.rowFields.length; i < j; i++)
+  for (i = 0; i < j; i++)
     keys.push(row[this.rowFields[i].toString()]);
 
-  for (var i = 0, j = this.columnFields.length; i < j; i++)
+  j = this.columnFields.length;
+  for (i = 0; i < j; i++)
     keys.push(row[this.columnFields[i].toString()]);
 
   return keys.join("\0");
