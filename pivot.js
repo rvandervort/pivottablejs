@@ -1,4 +1,7 @@
+var aggregators = require('./aggregators');
+
 var exports = module.exports = {};
+
 
 var Cell = function Cell(key) {
   this.key = key;
@@ -6,10 +9,6 @@ var Cell = function Cell(key) {
 };
 
 exports.PivotTable = function PivotTable(data, options) {
-  var aggregators = {
-    'count': function(currentCell, rowValue) { return currentCell.value + 1; },
-    'sum': function(currentCell, rowValue) { return currentCell.value + rowValue; }
-  };
 
   this.inputData = data || [];
   this.aggregator = options.aggregator || aggregators.count;
@@ -32,7 +31,7 @@ exports.PivotTable = function PivotTable(data, options) {
     var row = this.inputData[i];
     var cell = this.getCell(row);
 
-    cell.value = this.aggregator(cell, this.getCellValue(row));
+    this.aggregator(cell, row);
   }
 }
 
