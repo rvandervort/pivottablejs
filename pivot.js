@@ -18,8 +18,6 @@ exports.PivotTable = function PivotTable(data, options) {
   if (!this.validAggregator())
     throw new Error("Aggregator must be an object with accumulator and emitter methods");
 
-  console.log(this.aggregator);
-
   for (var i = 0, j = this.inputData.length; i < j; i++) {
     var row = this.inputData[i];
     var cell = this.getCell(row);
@@ -35,7 +33,6 @@ exports.PivotTable.prototype.validAggregator = function() {
     if (typeof this.aggregator == 'string') {
       var name = this.aggregator;
 
-      console.log(aggregators[name] instanceof Object);
       if (!(aggregators[name] instanceof Object)) {
         return false;
       }
