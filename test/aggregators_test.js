@@ -31,15 +31,15 @@ describe('Aggregators', function() {
   describe('#average', function() {
     it('emits the average of supplied values', function() {
       var cell = {value: 0};
-      var rowValues = [1, 3, 5];
+      var rowValues = [1, 3, 5, 11]
 
       var f = aggregators['average'];
 
       rowValues.forEach(function(value) {
-        f.accumulator(cell, value); 
+        f.accumulator(cell, value);
       });
 
-      expect(f.emitter(cell)).to.equal(3);
+      expect(f.emitter(cell)).to.equal(5);
     });
   });
 });

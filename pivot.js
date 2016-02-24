@@ -22,7 +22,7 @@ exports.PivotTable = function PivotTable(data, options) {
     var row = this.inputData[i];
     var cell = this.getCell(row);
 
-    this.aggregator.accumulator(cell, row);
+    this.aggregator.accumulator(cell, row[this.valueField]);
   }
 }
 
