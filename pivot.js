@@ -1,6 +1,6 @@
 var aggregators = require('./aggregators');
 
-var exports = module.exports = {};
+var exports = module.exports = {aggregators: aggregators};
 
 var Cell = function Cell(key) {
   this.key = key;
