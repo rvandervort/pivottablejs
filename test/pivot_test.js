@@ -3,13 +3,13 @@ var pivot = require('../pivot');
 var aggregators = require('../aggregators');
 
 describe('PivotTable', function() {
+
   var populationPivotOptions = {
-    aggregator: 'sum',
+    aggregator: 'count',
     rows: ['country'],
     columns: ['year'],
     valueField: 'population'
   };
-
 
   var populationData = [
       {country: "US", year: "2015", population: 100},
@@ -49,27 +49,6 @@ describe('PivotTable', function() {
       });
 
       expect(cellCount).to.equal(2);
-    });
-  });
-});
-
-describe('Aggregators', function() {
-  describe('#count', function() {
-    it('increments the cells value by one', function() {
-      var cell = {value: 0};
-      aggregators['count'](cell);
-      expect(cell.value).to.equal(1);
-    });
-  });
-
-
-  describe('#sum', function() {
-    it('adds the current row value to the cell value', function() {
-      var cell = {value: 37};
-      var rowValue = 1300;
-
-      aggregators['sum'](cell, rowValue);
-      expect(cell.value).to.equal(1337);
     });
   });
 });

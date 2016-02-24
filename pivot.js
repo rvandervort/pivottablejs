@@ -2,37 +2,48 @@ var aggregators = require('./aggregators');
 
 var exports = module.exports = {};
 
-
 var Cell = function Cell(key) {
   this.key = key;
   this.value = 0;
 };
 
 exports.PivotTable = function PivotTable(data, options) {
-
   this.inputData = data || [];
-  this.aggregator = options.aggregator || aggregators.count;
+  this.aggregator = options.aggregator || aggregators['count'];
   this.valueField = options.valueField || 'value';
   this.rowFields = options.rows || [];
   this.columnFields = options.columns || [];
   this.cells = { };
 
-  if (typeof this.aggregator != 'function')
-    if (typeof this.aggregator == 'string') {
-      var name = this.aggregator;
+  if (!this.validAggregator())
+    throw new Error("Aggregator must be an object with accumulator and emitter methods");
 
-      if (typeof aggregators[name] == 'function')
-        this.aggregator = aggregators[name];
-      else
-        throw new Error("Aggregator is not a function!");
-    }
+  console.log(this.aggregator);
 
   for (var i = 0, j = this.inputData.length; i < j; i++) {
     var row = this.inputData[i];
     var cell = this.getCell(row);
 
-    this.aggregator(cell, row);
+    this.aggregator.accumulator(cell, row);
   }
+}
+
+exports.PivotTable.prototype.validAggregator = function() {
+  if (this.aggregator instanceof Object)
+    return true;
+  else
+    if (typeof this.aggregator == 'string') {
+      var name = this.aggregator;
+
+      console.log(aggregators[name] instanceof Object);
+      if (!(aggregators[name] instanceof Object)) {
+        return false;
+      }
+      else {
+        this.aggregator = aggregators[name];
+        return true;
+      }
+    }
 }
 
 exports.PivotTable.prototype.getCell = function(row) {
