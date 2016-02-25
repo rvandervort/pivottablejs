@@ -42,4 +42,21 @@ describe('Aggregators', function() {
       expect(f.emitter(cell)).to.equal(5);
     });
   });
+
+
+  describe('#list', function() {
+    it('emits a list of values for the key', function() {
+      var cell = {value: 0};
+      var rowValues = ["John", "Bob", "Jeff"]
+
+      var f = aggregators['list'];
+
+      rowValues.forEach(function(value) {
+        f.accumulator(cell, value);
+      });
+
+      // eql does deep value compare
+      expect(f.emitter(cell)).to.eql(["John", "Bob", "Jeff"]);
+    });
+  });
 });

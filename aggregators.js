@@ -1,5 +1,4 @@
 var exports = module.exports = {
-
   'count': {
       accumulator: function(currentCell, rowValue) {
                       currentCell.value++;
@@ -35,5 +34,18 @@ var exports = module.exports = {
     emitter: function(cell) {
                return cell.sum / cell.count;
              }
+  },
+
+  'list': {
+     accumulator: function(currentCell, rowValue) {
+                    if (typeof currentCell.valueList == 'undefined')
+                      currentCell.valueList = [];
+
+                    currentCell.valueList.push(rowValue);
+                  },
+
+     emitter: function(cell) { return cell.valueList; }
+
   }
+
 };
