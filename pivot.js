@@ -62,17 +62,25 @@ exports.PivotTable.prototype.forEachCell = function(func) {
       func(this.cells[key]);
 }
 
+exports.PivotTable.prototype.getKeyValue = function(fieldDef, row) {
+  if (typeof fieldDef == 'string')
+    return row[fieldDef];
+
+  if (typeof fieldDef === 'function')
+    return fieldDef(row);
+}
+
 exports.PivotTable.prototype.getCellKey = function(row) {
   var keys = [];
   var i = 0;
   var j = this.rowFields.length;
 
   for (i = 0; i < j; i++)
-    keys.push(row[this.rowFields[i].toString()]);
+    keys.push(this.getKeyValue(this.rowFields[i], row).toString());
 
   j = this.columnFields.length;
   for (i = 0; i < j; i++)
-    keys.push(row[this.columnFields[i].toString()]);
+    keys.push(this.getKeyValue(this.columnFields[i], row).toString());
 
   return keys.join("\0");
 }

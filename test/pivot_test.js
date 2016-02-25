@@ -4,21 +4,6 @@ var aggregators = require('../aggregators');
 
 describe('PivotTable', function() {
 
-  var populationPivotOptions = {
-    aggregator: 'count',
-    rows: ['country'],
-    columns: ['year'],
-    valueField: 'population'
-  };
-
-  var populationData = [
-      {country: "US", year: "2015", population: 100},
-      {country: "US", year: "2016", population: 99},
-      {country: "CA", year: "2015", population: 300},
-      {country: "CA", year: "2016", population: 299},
-      {country: "CA", year: "2016", population: 110}
-    ];
-
 
   describe('#constructor', function() {
     it("raises an error if the provided aggregator is not a function", function() {
@@ -33,13 +18,44 @@ describe('PivotTable', function() {
     });
   });
 
+  describe('#getKeyValue', function() {
+    var options = {
+      aggregator: 'count',
+      rows: ['country'],
+      columns: ['year'],
+      valueField: 'population'
+    };
+
+    var myPivot = new pivot.PivotTable([], options); 
+    var row =  {name: 'Coraline', age: 9};
+
+    it("for a string key, returns that field from the data row", function() {
+      expect(myPivot.getKeyValue('name', row)).to.equal('Coraline');
+    });
+
+    it("for a function string, calls and returns the value from the function", function() {
+      var fieldDef = function(row) {
+        return row['age'] * 2;
+      }
+
+      expect(myPivot.getKeyValue(fieldDef, row)).to.equal(18);
+    });
+  });
+
   describe('#forEachCell', function() {
+    var options = {
+      aggregator: 'count',
+      rows: ['country'],
+      columns: ['year'],
+      valueField: 'population'
+    };
+
     var data = [
       {country: "US", year: "2015", population: 100},
       {country: "CA", year: "2015", population: 100}
     ];
 
-    var myPivot = new pivot.PivotTable(data, populationPivotOptions);
+    var myPivot = new pivot.PivotTable(data, options);
 
     it('iterates over each cell', function() {
       var cellCount = 0;
