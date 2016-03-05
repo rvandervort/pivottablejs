@@ -3,8 +3,6 @@ var pivot = require('../pivot');
 var aggregators = require('../aggregators');
 
 describe('PivotTable', function() {
-
-
   describe('#constructor', function() {
     it("raises an error if the provided aggregator is not a function", function() {
       var options = {
@@ -33,7 +31,7 @@ describe('PivotTable', function() {
       expect(myPivot.getKeyValue('name', row)).to.equal('Coraline');
     });
 
-    it("for a function string, calls and returns the value from the function", function() {
+    it("for a function key, calls and returns the value from the function", function() {
       var fieldDef = function(row) {
         return row['age'] * 2;
       }
