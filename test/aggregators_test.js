@@ -1,16 +1,17 @@
 var expect = require('chai').expect;
+var utils = require('../utils');
 var aggregators = require('../aggregators');
 
 describe('Aggregators', function() {
-
   describe('#count', function() {
     it('emits the value incremented by 1', function() {
       var cell = {value: 0};
       var rowValue = 2;
 
-      var f = aggregators['count'];
-      f.accumulator(cell, rowValue);
-      expect(f.emitter(cell)).to.equal(1);
+      utils.extend(cell, aggregators.count);
+
+      cell.accumulate(1);
+      expect(cell.emit()).to.equal(1);
     });
 
   });
@@ -19,27 +20,25 @@ describe('Aggregators', function() {
   describe('#sum', function() {
     it('adds the current row value to the cell value', function() {
       var cell = {value: 37};
-      var rowValue = 1300;
 
-      var f = aggregators['sum'];
-      f.accumulator(cell, rowValue);
+      utils.extend(cell, aggregators.sum);
 
-      expect(f.emitter(cell)).to.equal(1337);
+      cell.accumulate(1300);
+      expect(cell.emit()).to.equal(1337);
     });
   });
 
   describe('#average', function() {
     it('emits the average of supplied values', function() {
       var cell = {value: 0};
-      var rowValues = [1, 3, 5, 11]
 
-      var f = aggregators['average'];
+      utils.extend(cell, aggregators.average);
 
-      rowValues.forEach(function(value) {
-        f.accumulator(cell, value);
+      [1, 3, 5, 11].forEach(function(value) {
+        cell.accumulate(value);
       });
 
-      expect(f.emitter(cell)).to.equal(5);
+      expect(cell.emit()).to.equal(5);
     });
   });
 
@@ -51,12 +50,14 @@ describe('Aggregators', function() {
 
       var f = aggregators['list'];
 
+      utils.extend(cell, aggregators.list);
+
       rowValues.forEach(function(value) {
-        f.accumulator(cell, value);
+        cell.accumulate(value);
       });
 
       // eql does deep value compare
-      expect(f.emitter(cell)).to.eql(["John", "Bob", "Jeff"]);
+      expect(cell.emit()).to.eql(["John", "Bob", "Jeff"]);
     });
   });
 });
