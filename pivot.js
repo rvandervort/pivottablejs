@@ -1,5 +1,4 @@
 var aggregators = require('./aggregators');
-
 var exports = module.exports = {aggregators: aggregators};
 
 var Cell = function Cell(key) {
@@ -18,11 +17,14 @@ exports.PivotTable = function PivotTable(data, options) {
   if (!this.validAggregator())
     throw new Error("Aggregator must be an object with accumulator and emitter methods");
 
+  var acc = this.aggregator.accumulator;
+  var valueField = this.valueField;
+
   for (var i = 0, j = this.inputData.length; i < j; i++) {
     var row = this.inputData[i];
     var cell = this.getCell(row);
 
-    this.aggregator.accumulator(cell, row[this.valueField]);
+    acc(cell, row[valueField]);
   }
 }
 
@@ -72,9 +74,9 @@ exports.PivotTable.prototype.getKeyValue = function(fieldDef, row) {
 
 exports.PivotTable.prototype.getCellKey = function(row) {
   var keys = [];
-  var i = 0;
-  var j = this.rowFields.length;
+  var i = 0, j = 0;
 
+  j = this.rowFields.length;
   for (i = 0; i < j; i++)
     keys.push(this.getKeyValue(this.rowFields[i], row).toString());
 
