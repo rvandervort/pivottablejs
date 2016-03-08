@@ -20,15 +20,10 @@ var exports = module.exports = {
   },
 
   'average': {
+    sum: 0,
+    count: 0,
     accumulate: function(rowValue) {
-       if (typeof this.sum == 'undefined')
-         this.sum = 0;
-
        this.sum += rowValue;
-
-       if (typeof this.count == 'undefined')
-         this.count = 0;
-
        this.count++;
     },
     emit: function() {
@@ -37,15 +32,12 @@ var exports = module.exports = {
   },
 
   'list': {
+     valueList: [],
      accumulate: function(rowValue) {
-                    if (typeof this.valueList == 'undefined')
-                      this.valueList = [];
-
                     this.valueList.push(rowValue);
                   },
 
      emit: function() { return this.valueList; }
 
   }
-
 };
