@@ -35,8 +35,9 @@ exports.PivotTable = function PivotTable(data, options) {
 }
 
 exports.PivotTable.prototype.validAggregator = function() {
-  if (this.aggregator instanceof Object)
-    return true;
+  if (this.aggregator instanceof Object) {
+    return ((typeof this.aggregator.emit == 'function') && (typeof this.aggregator.accumulate == 'function'));
+  }
   else
     if (typeof this.aggregator == 'string') {
       var name = this.aggregator;

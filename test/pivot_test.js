@@ -4,15 +4,39 @@ var aggregators = require('../aggregators');
 
 describe('PivotTable', function() {
   describe('#constructor', function() {
-    it("raises an error if the provided aggregator is not a function", function() {
-      var options = {
-        aggregator: 'not_a_function',
-        rows: ['country'],
-        columns: ['year'],
-        valueField: 'population'
-      };
+    describe('...raises an exception if: ', function() {
+      it("the provided named aggregator does not exist", function() {
+        var options = {
+          aggregator: 'not_a_function',
+          rows: ['country'],
+          columns: ['year'],
+          valueField: 'population'
+        };
 
-      expect(function() { var myPivot = new pivot.PivotTable([], options); }).to.throw(/Aggregator/);
+        expect(function() { var myPivot = new pivot.PivotTable([], options); }).to.throw(/Aggregator/);
+      });
+
+      it("the provided aggregator object does not have an emit function", function() {
+        var options = {
+          aggregator: {accumulate: function() {}},
+          rows: ['country'],
+          columns: ['year'],
+          valueField: 'population'
+        };
+        expect(function() { var myPivot = new pivot.PivotTable([], options); }).to.throw(/Aggregator/);
+      });
+
+
+      it("the provided aggregator object does not have an accumulate function", function() {
+        var options = {
+          aggregator: {emit: function() { }},
+          rows: ['country'],
+          columns: ['year'],
+          valueField: 'population'
+        };
+        expect(function() { var myPivot = new pivot.PivotTable([], options); }).to.throw(/Aggregator/);
+      });
+
     });
   });
 
