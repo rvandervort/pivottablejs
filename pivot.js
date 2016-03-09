@@ -16,7 +16,8 @@ exports.PivotTable = function PivotTable(data, options) {
   this.rowFields = options.rows || [];
   this.columnFields = options.columns || [];
   this.cells = {};
-  this.summary = {};
+  this.rowSummary = {};
+  this.columnSummary = {};
 
   this.aggregator = options.aggregator || aggregators['count'];
 
@@ -25,29 +26,34 @@ exports.PivotTable = function PivotTable(data, options) {
 
   utils.extend(this.Cell.prototype, this.aggregator);
 
+  this.calculate();
+
+}
+
+exports.PivotTable.prototype.calculate = function() {
   var valueField = this.valueField;
 
   for (var i = 0, j = this.inputData.length; i < j; i++) {
     var row = this.inputData[i];
     var keys = this.getCellKeys(row);
 
-    // Accumulate Individual Cell
-    var cell = this.getCell(row, keys);
+    // Accumulate individual cell
+    this.accumulate('cells', keys.cell, row[valueField]);
 
-    cell.accumulate(row[valueField]);
+    // Accumulate summaries
+    this.accumulate('rowSummary', keys.row, row[valueField]);
+    this.accumulate('columnSummary', keys.column, row[valueField]);
 
-    this.accumulate_summary(keys.column, row[valueField]);
-
-    this.accumulate_summary(keys.row, row[valueField]);
   }
 }
 
-exports.PivotTable.prototype.accumulate_summary = function(key, value)  {
-  if (typeof this.summary[key] == 'undefined')
-    this.summary[key] = new this.Cell(key);
+exports.PivotTable.prototype.accumulate = function(target, key, value) {
+  if (typeof this[target][key] == 'undefined')
+    this[target][key] = new this.Cell(key);
 
-  this.summary[key].accumulate(value);
+  this[target][key].accumulate(value);
 }
+
 
 exports.PivotTable.prototype.validAggregator = function() {
   if (this.aggregator instanceof Object) {
