@@ -15,7 +15,8 @@ exports.PivotTable = function PivotTable(data, options) {
   this.valueField = options.valueField || 'value';
   this.rowFields = options.rows || [];
   this.columnFields = options.columns || [];
-  this.cells = { };
+  this.cells = {};
+  this.summary = {};
 
   this.aggregator = options.aggregator || aggregators['count'];
 
@@ -28,10 +29,24 @@ exports.PivotTable = function PivotTable(data, options) {
 
   for (var i = 0, j = this.inputData.length; i < j; i++) {
     var row = this.inputData[i];
-    var cell = this.getCell(row);
+    var keys = this.getCellKeys(row);
+
+    // Accumulate Individual Cell
+    var cell = this.getCell(row, keys);
 
     cell.accumulate(row[valueField]);
+
+    this.accumulate_summary(keys.column, row[valueField]);
+
+    this.accumulate_summary(keys.row, row[valueField]);
   }
+}
+
+exports.PivotTable.prototype.accumulate_summary = function(key, value)  {
+  if (typeof this.summary[key] == 'undefined')
+    this.summary[key] = new this.Cell(key);
+
+  this.summary[key].accumulate(value);
 }
 
 exports.PivotTable.prototype.validAggregator = function() {
@@ -52,13 +67,11 @@ exports.PivotTable.prototype.validAggregator = function() {
     }
 }
 
-exports.PivotTable.prototype.getCell = function(row) {
-  var key = this.getCellKey(row);
+exports.PivotTable.prototype.getCell = function(row, keys) {
+  if (typeof this.cells[keys.cell] == 'undefined')
+    this.cells[keys.cell] = new this.Cell(keys.cell);
 
-  if (typeof this.cells[key] == 'undefined')
-    this.cells[key] = new this.Cell(key);
-
-  return this.cells[key];
+  return this.cells[keys.cell];
 }
 
 exports.PivotTable.prototype.getCellValue = function(row) {
@@ -79,17 +92,24 @@ exports.PivotTable.prototype.getKeyValue = function(fieldDef, row) {
     return fieldDef(row);
 }
 
-exports.PivotTable.prototype.getCellKey = function(row) {
+exports.PivotTable.prototype.getCellKeys = function(row) {
   var keys = [];
   var i = 0, j = 0;
 
+  var rowKey = [];
+  var colKey = [];
+
   j = this.rowFields.length;
   for (i = 0; i < j; i++)
-    keys.push(this.getKeyValue(this.rowFields[i], row).toString());
+    rowKey.push(this.getKeyValue(this.rowFields[i], row).toString());
 
   j = this.columnFields.length;
   for (i = 0; i < j; i++)
-    keys.push(this.getKeyValue(this.columnFields[i], row).toString());
+    colKey.push(this.getKeyValue(this.columnFields[i], row).toString());
 
-  return keys.join("\0");
+  return { 
+    cell: rowKey.concat(colKey).join("\0"),
+    column: colKey.join("\0"),
+    row: rowKey.join("\0")
+  };
 }
