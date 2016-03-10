@@ -32,8 +32,10 @@ var exports = module.exports = {
   },
 
   'list': {
-     valueList: [],
      accumulate: function(rowValue) {
+                   if (typeof this.valueList == 'undefined')
+                     this.valueList = [];
+
                     this.valueList.push(rowValue);
                   },
 
